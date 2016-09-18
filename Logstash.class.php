@@ -55,21 +55,19 @@ class Logstash
 	 * @param array $res 			返回信息
 	 * @param string $tracking_id	请求跟踪ID
 	 */
-	public function write($uri='', $req=array(), $res=array(), $tracking_id='')
-	{
+	public function write($uri='', $req=array(), $res=array(), $tracking_id=''){
 
 		// 整理消息日志协议
 		$logdata = array(
 			'type'			=> $this->LOGSTASH_TYPE,		// 日志类型
 			'tracking_id'   => $tracking_id, 				// 唯一请求标识
+			'@uri'			=> (string)$uri,				// 请求URI
 			'@req'          => (array)$this->check($req),	// 请求结果
 			'@res'          => (array)$this->check($res),	// 响应结果
 			'@timestamp'	=> date('c', time())			// 请求时间
 		);
 
-		var_dump($logdata['@timestamp']);
-
-		$redis = new \Redis();
+		$redis = new \Redis(); 
 		$redis->connect($this->REDIS_HOST, $this->REDIS_PORT);
 		$redis->auth($this->REDIS_AUTH);
 	
